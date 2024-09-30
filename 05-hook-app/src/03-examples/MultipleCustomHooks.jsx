@@ -1,8 +1,6 @@
 import React from "react"
-import { useFetch } from "../hooks/useFetch"
-import { useCounter } from "../hooks/useCounter"
-import { LoadingMessage } from "./LoadingMessage"
-import { PokemonCard } from "./PokemonCard"
+import { useFetch,useCounter } from "../hooks/index"
+import { LoadingMessage,PokemonCard } from "./index"
 
 export const MultipleCustomHooks = () => {
     const {counter,increaseCounter,decrementCounter}=useCounter(1)
