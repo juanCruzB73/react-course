@@ -8,3 +8,6 @@ button{
 span:hover{
     cursor: pointer;
 }
+a{
+    margin-right: 8px;
+}
