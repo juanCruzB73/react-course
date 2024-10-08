@@ -1,5 +1,13 @@
 export const heroes = [
     {
+        'id':'elliot-alderson',
+        'superhero':"Elliot Alderson",
+        'publisher':'Sam Smail', 
+        'alter_ego':'Sam Sepiol',
+        'first_appearance':'Episode 1',
+        'characters':'Elliot alderson, Mr. Robot'
+    },
+    {
         'id': 'dc-batman',
         'superhero':'Batman', 
         'publisher':'DC Comics', 
