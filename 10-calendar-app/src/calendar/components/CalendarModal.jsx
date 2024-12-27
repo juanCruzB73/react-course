@@ -1,8 +1,10 @@
 import { addHours, differenceInSeconds } from 'date-fns';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Modal from 'react-modal';
 import DatePicker,{registerLocale} from "react-datepicker";
 import es from 'date-fns/locale/es'
+import Swal from 'sweetalert2';
+import "sweetalert2/dist/sweetalert2.min.css"
 import "react-datepicker/dist/react-datepicker.css";
 
 registerLocale('es',es)
@@ -24,6 +26,7 @@ Modal.setAppElement('#root');
 export const CalendarModal = () => {
 
     const [isOpen,setIsOpen]=useState(true);
+    const [formSubmited,setFormSubmitted]=useState(false);
 
     const [formValues,setFormValues]=useState({
         title:"",
@@ -31,6 +34,15 @@ export const CalendarModal = () => {
         start:new Date(),
         end: addHours(new Date(),2),
     });
+
+    const titleClass = useMemo(()=>{
+        
+        if(!formSubmited) return "";
+
+        return(formValues.title.length>0) ? "" : "is-invalid";
+
+
+    },[formValues,formSubmited])
 
     const onInputChange=({target})=>{
         setFormValues({
@@ -51,14 +63,20 @@ export const CalendarModal = () => {
     
     const onSubmit=(event)=>{
         event.preventDefault();
-        
+        setFormSubmitted(true);
+
         const difference = differenceInSeconds(formValues.end,formValues.start)
 
-        if(isNaN(difference) || difference <=0 )return;
+        if(isNaN(difference) || difference <=0 ){
+            Swal.fire("fechas incorrectas","corrgir fechas ingresadas","error");
+            return
+        };
 
         if(formValues.title.length<=0)return;
 
         //todo{cerrar modal}
+
+
     }
     return (
     <Modal
@@ -92,7 +110,7 @@ export const CalendarModal = () => {
                 <label>Titulo y notas</label>
                 <input 
                     type="text" 
-                    className="form-control"
+                    className={`form-control ${titleClass}`}
                     placeholder="Título del evento"
                     name="title"
                     autoComplete="off"
