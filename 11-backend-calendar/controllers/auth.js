@@ -1,24 +1,40 @@
 const {response}=require("express");
-
+const bcrypt = require("bcryptjs")
 const User = require("../models/User");
+const { generateJWT } = require("../helpers/jwt");
 
 const createUser=async(req,res=response)=>{
 
-
-    const {name,email,password}=req.body;
+    const {email,password}=req.body;
 
     try{
 
-        const user = new User(req.body)
+        let user = await User.findOne({email});
+        
+        if(user){
+            return res.status(400).json({
+                ok:false,
+                msg:"Usear already exist with that email"
+            })
+        }
+
+        user = new User(req.body)
+
+        //encrypt password
+        const salt = bcrypt.genSaltSync();
+        user.password=bcrypt.hashSync(password,salt);
 
         await user.save();
-    
+
+        //generate token
+        const token= await generateJWT(user.id,user.name);
+        
         return res.status(201).json({
             ok:true,
             msg:"register",
-            name,
-            email,
-            password
+            uid:user.id,
+            name:user.name,
+            token:token,
         })
 
     }catch(error){
@@ -32,25 +48,65 @@ const createUser=async(req,res=response)=>{
 
 }
 
-const  loginUser = (req,res=response)=>{
+const  loginUser = async(req,res=response)=>{
 
     const {email,password}=req.body;
 
-    
+    try{
 
-    res.json({
-        "ok":true,
-        msg:"login",
-        email,
-        password
-    })
+        let user = await User.findOne({email});
+        
+        if(!user){
+            return res.status(400).json({
+                ok:false,
+                msg:"Email doesnt exist"
+            })
+        }
+        //validate passwords
+        const validPassword=bcrypt.compareSync(password,user.password)
+
+        if(!validPassword){
+            return res.status(400).json({
+                ok:false,
+                msg:"Incorrect password"
+            })
+        }
+
+        //generate token
+        const token=await generateJWT(user.id,user.name);
+        
+        res.json({
+            ok:true,
+            uid:user.id,
+            token,
+            name:user.name,
+
+        })
+
+    }catch(error){
+        console.log(error);
+        res.status(500).json({
+            ok:false,
+            msg:"noup"
+        })
+
+    }
+
 }
 
-const renewUser=(req,res=response)=>{
+const renewUser=async(req,res=response)=>{
     
+    const uid = req.uid;
+    const name = req.name;
+
+    //generate token
+    const token=await generateJWT(uid,name);
+
     res.json({
         "ok":true,
-        msg:"renwe"
+        msg:"renwe",
+        token,
+        
     })
 
 }

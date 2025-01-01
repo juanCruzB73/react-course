@@ -7,11 +7,13 @@ const {Router}=require("express");
 const {check}=require("express-validator")
 const {createUser,loginUser,renewUser}=require("../controllers/auth");
 const { fieldValidator } = require("../middlewares/fieldValidator");
+const { tokenValidator } = require("../middlewares/tokenValidator");
 
 
 const router=Router();
 
-//          route,middleware,controller
+//route,middleware,controller
+
 router.post("/new",
     [
         check("name","name is necesary").not().isEmpty(),
@@ -27,6 +29,6 @@ router.post("/",
         fieldValidator
     ]
     ,loginUser); 
-router.get("/renew",renewUser)
+router.get("/renew",tokenValidator,renewUser)
 
 module.exports=router
