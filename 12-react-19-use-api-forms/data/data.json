@@ -8,7 +8,7 @@
     },
     {
       "id": "d4e5f6",
-      "name": "Venus",
+      "name": "VENUS",
       "type": "Planeta",
       "distanceFromSun": "108.2 millones de km"
     },
@@ -20,7 +20,7 @@
     },
     {
       "id": "j0k1l2",
-      "name": "Marte",
+      "name": "MARTE",
       "type": "Planeta",
       "distanceFromSun": "227.9 millones de km"
     },
